@@ -1,0 +1,42 @@
+bundle agent web_cluster
+{
+  methods:
+    am_policy_hub::
+      "id_web_servers"
+        usebundle => identify_web_servers_ready;
+
+    web_server::
+      "webserver"
+        usebundle => web_server;
+
+    proxy_server::
+      "epel" -> { "nginx" }
+        usebundle => epel,
+        comment => "The load balancer that we use comes from this repository";
+
+      "proxyserver"
+        usebundle => web_proxy;
+}
+
+bundle agent identify_web_servers_ready
+{
+  vars:
+    am_policy_hub::
+      "web_server_ips" slist => hostswithclass("web_server_ready", "address");
+      "count_web_server_ips" int => length("web_server_ips");
+
+  classes:
+    "webservers_ready" expression => isvariable("web_server_ips");
+    "webservers_not_ready" not => isvariable("web_server_ips");
+
+  files:
+    webservers_ready::
+      "/var/cfengine/masterfiles/web_server_ips.dat"
+        create => "true",
+        edit_defaults => empty,
+        edit_line => append_if_no_lines(@(web_server_ips));
+
+    webservers_not_ready::
+      "/var/cfengine/masterfiles/web_server_ips.dat"
+        delete => tidy;
+}

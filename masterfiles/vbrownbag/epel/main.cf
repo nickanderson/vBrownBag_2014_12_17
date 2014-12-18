@@ -1,0 +1,32 @@
+bundle agent epel
+{
+  vars:
+    "template_dir" string => "$(this.promise_dirname)/templates";
+
+    "config" string => "/etc/yum.repos.d/epel.repo";
+    "config_template" string => "$(template_dir)/epel.repo.mustache";
+    "mirrorlist" string => "https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=$basearch";
+    "failovermethod" string => "priority";
+    "enabled" int => "1";
+
+    "gpgcheck" int => "1";
+    "gpgkey" string => "/etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6";
+    "gpgkey_template" string => "$(template_dir)/gpgkey.mustache";
+
+  files:
+    "$(config)"
+      create => "true",
+      perms => mog("644", "root", "root"),
+      edit_template => "$(config_template)",
+      template_method => "mustache",
+      comment => "We need the repository configured or we will be unable to
+                  download and install some important packages";
+
+    "$(gpgkey)"
+      create => "true",
+      perms => mog("644", "root", "root"),
+      edit_template => "$(gpgkey_template)",
+      template_method => "mustache",
+      comment => "It's important to install the gpgkey so that we can verify
+                  package authenticity";
+}

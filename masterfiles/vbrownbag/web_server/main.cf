@@ -1,0 +1,27 @@
+bundle agent web_server
+{
+  vars:
+    "webpage" string => "/var/www/html/index.html";
+    "webpage_template" string => "$(this.promise_dirname)/webpage_template.mustache";
+
+  classes:
+    "web_server_ready"
+      expression => returnszero("$(paths.service) httpd status > /dev/null", "useshell"),
+      scope => "namespace",
+      meta => { "report" };
+
+  files:
+    "$(webpage)"
+      create => "true",
+      edit_template => "$(webpage_template)",
+      template_method => "mustache",
+      perms => mog("644", "root", "root");
+
+  packages:
+      "httpd"
+        package_policy => "add";
+
+  services:
+      "httpd"
+        service_policy => "start";
+}

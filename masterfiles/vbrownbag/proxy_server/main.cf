@@ -1,0 +1,55 @@
+bundle agent web_proxy
+{
+  vars:
+    "config" string => "/etc/nginx/conf.d/default.conf";
+    "config_template" string => "$(this.promise_dirname)/proxy_template.mustache";
+
+    "html" string => "/usr/share/nginx/html/index.html";
+    "html_template" string => "$(this.promise_dirname)/index.html.mustache";
+
+    "upstream_file" string => "/var/cfengine/inputs/web_server_ips.dat";
+    "upstream_comment_regexp" string => "";
+    "upstream_split_regexp" string => "\n";
+    "maxentries" int => "100";
+    "maxbytes" int => "1M";
+
+    upstreams_ready::
+      "upstream_ips" slist => readstringlist( $(upstream_file),
+                                              $(upstream_comment_regexp),
+                                              $(upstream_split_regexp),
+                                              $(maxentries),
+                                              $(maxbytes));
+
+  classes:
+    "upstreams_ready" expression => fileexists($(upstream_file));
+    "upstreams_not_ready" not => fileexists($(upstream_file));
+
+  files:
+    "$(upstream_file)"
+      copy_from => remote_dcp("/var/cfengine/masterfiles/web_server_ips.dat", $(sys.policy_hub));
+
+    "$(html)"
+      create => "true",
+      edit_template => "$(html_template)",
+      template_method => "mustache";
+
+    "$(config)"
+      create => "true",
+      edit_template => "$(config_template)",
+      template_method => "mustache",
+      classes => scoped_classes_generic("bundle", "config"),
+      perms => mog("644", "root", "root");
+
+  commands:
+    config_repaired::
+      "$(paths.service)"
+        args => "nginx restart";
+
+  packages:
+      "nginx"
+        package_policy => "add";
+
+  services:
+      "nginx"
+        service_policy => "start";
+}

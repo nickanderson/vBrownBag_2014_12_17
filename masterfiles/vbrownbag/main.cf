@@ -1,0 +1,29 @@
+bundle common vbrownbag_main_file_control
+{
+  vars:
+    "inputs" slist => {
+                        "$(this.promise_dirname)/epel/main.cf",
+                        "$(this.promise_dirname)/proxy_server/main.cf",
+                        "$(this.promise_dirname)/web_server/main.cf",
+                        "$(this.promise_dirname)/web_cluster/main.cf",
+                      };
+}
+body file control
+{
+  inputs => { @(vbrownbag_main_file_control.inputs) };
+}
+
+bundle agent vbrownbag_main
+# @brief Entry point for vbrownbag demo
+{
+  methods:
+    "Classify Systems"
+      usebundle => vbrownbag_classification,
+      comment => "Classification/Grouping of
+                  systems to assign roles.";
+
+    "Configure Web Cluster" -> { "@jfrappier" }
+      usebundle => web_cluster,
+      comment => "A demo for #vbrownbag configuring
+                  2 webservers and a load balancer";
+}

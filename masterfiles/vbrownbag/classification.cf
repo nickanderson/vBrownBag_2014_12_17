@@ -1,0 +1,20 @@
+bundle common vbrownbag_classification
+# @brief Classify webservers and proxyservers
+{
+  classes:
+    "proxy_server"
+      or => { "host001"},
+      scope => "namespace",
+      meta => { "inventory", "attribute_name=Role" },
+      comment => "We have to have some way to pick
+                  the webservers. A static list is
+                  one of many possibilities.";
+
+    "web_server"
+      expression => iprange("192.168.33.4-9"),
+      scope => "namespace",
+      meta => { "inventory", "attribute_name=Role" },
+      comment => "cfengine can also do dynamic
+                  classification based on pretty much
+                  any attribute you can imagine.";
+}

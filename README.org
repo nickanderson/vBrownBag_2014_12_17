@@ -1,0 +1,23 @@
+* Demo environment for #vBrownBag US 2014-12-17
+
+** How do I use it?
+1) Install Virtualbox
+2) Install Vagrant
+3) Run vagrant up
+
+** What should I look at?
+1) [[file:vBrownBag US 2014-12-17.pdf][The Presentation]]
+2) The policy that makes it all happen
+   - [[file:masterfiles/vbrownbag/web_cluster/classification.cf][Classification Policy]]
+   - [[file:masterfiles/vbrownbag/web_cluster/main.cf][Configuration Policy]]
+     - [[file:masterfiles/vbrownbag/web_cluster/main.cf][Web Cluster Policy]] (activates proxy server and web server policy)
+       - [[file:masterfiles/vbrownbag/main.cf][Proxy Policy]]
+	 - [[file:masterfiles/vbrownbag/proxy_server/index.html.mustache][Webpage Template]]
+	 - [[file:masterfiles/vbrownbag/proxy_template.mustache][Nginx Configuration Template]]
+	 - [[file:masterfiles/vbrownbag/epel/main.cf][EPEL Repo Config]]
+	   - [[file:masterfiles/vbrownbag/epel/templates/epel.repo.mustache][Repo Config Template]]
+       - [[file:masterfiles/vbrownbag/web_server/main.cf][Web Server Policy]]
+	 - [[file:masterfiles/vbrownbag/web_server][Webpage Template]]
+3) The Proxy Server - http://192.168.33.3
+4) The Webservers - http://192.168.33.4, http://192.168.33.5, http://192.168.33.6
+5) Mission Portal - http://localhost:9002
