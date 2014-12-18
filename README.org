@@ -1,12 +1,12 @@
 * Demo environment for #vBrownBag US 2014-12-17
 
 ** How do I use it?
-1) Install Virtualbox
-2) Install Vagrant
+1) Install [[https://www.virtualbox.org/wiki/Downloads][Virtualbox]]
+2) Install [[https://www.vagrantup.com/downloads.html][Vagrant]]
 3) Run vagrant up
 
 ** What should I look at?
-1) [[file:vBrownBag US 2014-12-17.pdf][The Presentation]]
+1) [[file:vBrownBag_US_2014-12-17.pdf][The Presentation]]
 2) The policy that makes it all happen
    - [[file:masterfiles/vbrownbag/web_cluster/classification.cf][Classification Policy]]
    - [[file:masterfiles/vbrownbag/web_cluster/main.cf][Configuration Policy]]
